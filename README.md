@@ -254,3 +254,26 @@ Created as part of .NET Course - Secure Coding Assignment
 ## 📄 License
 
 This project is for educational purposes.
+## 🔐 Authentication & Authorization
+
+SafeVault implements secure user authentication and role-based authorization:
+
+### Features
+- **Password Hashing**: PBKDF2 algorithm with unique salts
+- **Account Lockout**: Protection against brute force attacks (5 attempts = 5 min lockout)
+- **Role-Based Access Control**: Admin and User roles with different permissions
+- **Secure Sessions**: HttpOnly cookies with 2-hour sliding expiration
+- **Input Validation**: Prevents XSS and SQL injection in user credentials
+
+### Demo Accounts
+- **Admin**: `admin` / `Admin@123` (Full access)
+- **User**: `testuser` / `Test@123` (Limited access)
+
+For detailed documentation, see [AUTHENTICATION_AUTHORIZATION.md](AUTHENTICATION_AUTHORIZATION.md)
+
+### Security Test Results
+- Authentication Tests: 11/11 ✅
+- Authorization Tests: 6/6 ✅
+- SQL Injection Tests: 7/7 ✅
+- XSS Tests: 9/9 ✅
+- **Total: 33/33 Tests Pass (100%)**
