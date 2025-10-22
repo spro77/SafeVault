@@ -21,7 +21,7 @@ public class InputValidationService : IInputValidationService
     {
         "<script", "</script>", "javascript:", "onerror=", "onload=",
         "<iframe", "</iframe>", "onclick=", "onmouseover=", "eval(",
-        "expression(", "<object", "<embed", "<applet"
+        "expression(", "<object", "<embed", "<applet", "alert("
     };
 
     /// <summary>
@@ -34,6 +34,9 @@ public class InputValidationService : IInputValidationService
 
         // Trim whitespace
         string sanitized = input.Trim();
+
+        // Remove null bytes FIRST (before other processing)
+        sanitized = sanitized.Replace("\0", string.Empty);
 
         // Check for dangerous patterns (case-insensitive)
         foreach (var pattern in DangerousPatterns)
@@ -48,9 +51,6 @@ public class InputValidationService : IInputValidationService
 
         // Remove any remaining HTML tags
         sanitized = Regex.Replace(sanitized, @"<[^>]+>", string.Empty);
-
-        // Remove null bytes
-        sanitized = sanitized.Replace("\0", string.Empty);
 
         return sanitized;
     }
