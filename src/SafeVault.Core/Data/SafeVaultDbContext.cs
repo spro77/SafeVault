@@ -1,16 +1,16 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SafeVault.Core.Models;
 
 namespace SafeVault.Core.Data;
 
-public class SafeVaultDbContext : DbContext
+public class SafeVaultDbContext : IdentityDbContext<User, Role, int>
 {
     public SafeVaultDbContext(DbContextOptions<SafeVaultDbContext> options) 
         : base(options)
     {
     }
-    
-    public DbSet<User> Users { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,10 +19,28 @@ public class SafeVaultDbContext : DbContext
         // Configure User entity
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId);
-            entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
             entity.HasIndex(e => e.Email).IsUnique();
+            entity.Property(e => e.FullName).HasMaxLength(100);
         });
+        
+        // Seed default roles only
+        modelBuilder.Entity<Role>().HasData(
+            new Role 
+            { 
+                Id = 1, 
+                Name = "Admin", 
+                NormalizedName = "ADMIN",
+                Description = "Administrator with full access",
+                ConcurrencyStamp = "1"
+            },
+            new Role 
+            { 
+                Id = 2, 
+                Name = "User", 
+                NormalizedName = "USER",
+                Description = "Regular user with limited access",
+                ConcurrencyStamp = "2"
+            }
+        );
     }
 }

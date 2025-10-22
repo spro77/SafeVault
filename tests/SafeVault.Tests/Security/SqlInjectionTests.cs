@@ -24,11 +24,11 @@ public class SqlInjectionTests
         _validationService = new InputValidationService();
         _userService = new UserService(_context, _validationService);
 
-        // Seed test data
+        // Seed test data - Fixed to use Id and UserName
         _context.Users.Add(new Core.Models.User
         {
-            UserId = 1,
-            Username = "testuser",
+            Id = 1,  // Changed from UserId
+            UserName = "testuser",  // Changed from Username
             Email = "test@example.com",
             CreatedAt = DateTime.UtcNow
         });
@@ -85,7 +85,6 @@ public class SqlInjectionTests
     public async Task CreateUser_WithSqlInjectionInEmail_ShouldBeSanitized()
     {
         // Arrange
-        var validUsername = "validuser";
         var maliciousEmail = "test@test.com'; DROP TABLE Users--";
 
         // Act
@@ -113,7 +112,7 @@ public class SqlInjectionTests
         // Verify original data is intact
         var user = await _userService.GetUserByIdAsync(userId);
         Assert.That(user, Is.Not.Null);
-        Assert.That(user.Username, Is.EqualTo("testuser"));
+        Assert.That(user.UserName, Is.EqualTo("testuser"));  // Changed from Username
         Assert.That(user.Email, Is.EqualTo("test@example.com"));
     }
 
@@ -164,7 +163,7 @@ public class SqlInjectionTests
             "Database should still have exactly 1 user after injection attempts");
         
         var originalUser = allUsers.First();
-        Assert.That(originalUser.Username, Is.EqualTo("testuser"));
+        Assert.That(originalUser.UserName, Is.EqualTo("testuser"));  // Changed from Username
         Assert.That(originalUser.Email, Is.EqualTo("test@example.com"));
     }
 }

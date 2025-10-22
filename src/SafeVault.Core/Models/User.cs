@@ -1,20 +1,26 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace SafeVault.Core.Models;
 
-public class User
+// Inherit from IdentityUser to get authentication features
+public class User : IdentityUser<int>
 {
-    [Key]
-    public int UserId { get; set; }
-    
-    [Required]
-    [StringLength(100, MinimumLength = 3)]
-    public string Username { get; set; } = string.Empty;
-    
-    [Required]
-    [EmailAddress]
+    // IdentityUser already provides:
+    // - Id (we override to use int instead of string)
+    // - UserName
+    // - Email
+    // - PasswordHash
+    // - SecurityStamp
+    // - etc.
+
     [StringLength(100)]
-    public string Email { get; set; } = string.Empty;
+    public string? FullName { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    public DateTime? LastLoginAt { get; set; }
+    
+    // For our original UserId compatibility
+    public int UserId => Id;
 }

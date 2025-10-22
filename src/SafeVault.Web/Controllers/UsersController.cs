@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SafeVault.Core.Services;
 using SafeVault.Web.Models;
 
+
 namespace SafeVault.Web.Controllers;
 
+[Authorize]
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
@@ -80,7 +83,7 @@ public class UsersController : Controller
         var model = new UserViewModel
         {
             UserId = user.UserId,
-            Username = user.Username,
+            Username = user.UserName,  // Changed from Username to UserName
             Email = user.Email
         };
 
@@ -125,7 +128,8 @@ public class UsersController : Controller
         }
     }
 
-    // GET: /Users/Delete/5
+    /// GET: /Users/Delete/5
+    [Authorize(Roles = "Admin")] // Only admins can delete users
     public async Task<IActionResult> Delete(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
@@ -140,6 +144,7 @@ public class UsersController : Controller
     // POST: /Users/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")] // Only admins can delete users
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var success = await _userService.DeleteUserAsync(id);
