@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SafeVault.Core.Data;
+using SafeVault.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,11 @@ builder.Services.AddControllersWithViews();
 // Register the database context
 builder.Services.AddDbContext<SafeVaultDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register application services
+builder.Services.AddScoped<IInputValidationService, InputValidationService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
